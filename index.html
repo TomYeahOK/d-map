@@ -9,24 +9,19 @@
         <link rel="apple-touch-icon" href="apple-touch-icon.png">
 
         <link rel="stylesheet" href="css/normalize.min.css">
-        <link rel="stylesheet" href="css/main.css">
-
-<!--         <script src="js/vendor/modernizr-2.8.3.min.js"></script>
+<!--         <link rel="stylesheet" href="css/main.css">
  -->
         <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyDyweMwYm5nElgstXTv-MWzea9i39eJPSM"> </script>
 
-        <!-- <script type="text/javascript" src="http://maps.stamen.com/js/tile.stamen.js"></script> -->
-
         <style type="text/css">
-            button {
-                    color: #e64c18;
-                    background: white;
-                    border-radius: 4px;
-                    border: none;
-                    margin: 0 0.2em 0.2em 0;
-                    box-shadow: 1px 1px 3px black;
+            #map_canvas {
+                width: 100%;
+                min-height: 70vh;
             }
         </style>
+
+
+
     </head>
     <body>
         <!--[if lt IE 8]>
@@ -61,26 +56,10 @@
 
                 <aside>
 
-                    <label>Big <input type="checkbox" name="big" value="big" class="filter-button" checked="checked"></label>
-                    <label>Small <input type="checkbox" name="small" value="small" class="filter-button" checked="checked"></label>
 
                     <p>This map takes data from Google Fusion Table, interprets it as JSON, and generates map based on that data.</p>
 
 
-                    <div id="buttons-to-show-infowindows">
-                        <div id="loading">
-                        <p>- - - - LOADING- - - -</p>
-                        </div>
-                        
-                    </div>
-
-                      <!-- <form class="search-form">
-                        <input type="text" class="search" placeholder="Search">
-                        <ul class="suggestions">
-                          <li>Filter for a place</li>
-                          
-                        </ul>
-                      </form> -->
                         
                 </aside>
 
