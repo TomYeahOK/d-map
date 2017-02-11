@@ -1,148 +1,101 @@
-//This is the barebones of the old LAM system.
-//Notice how it uses layers, etc.
-//The method of detecting what to add to filter is also odd - looks at all checkboxes named 'store' and adds layers.
+//Pulling in fusion tables data as JSON
+var fusionTablesData = {};
+
+var map, layer;
+var markers = [];
+var infoWindows = [];
+var buttons = [];
+var openInfoWindow = null;
+
 
 document.addEventListener('DOMContentLoaded', initialize() );
 
+//A hardworking function that takes the fusionTablesData, makes sense of it, and sets up the map components.
+function createMapData(data){
+	fusionTablesData = JSON.parse(data);
 
-var map, layer;
-var tableid = 2277718;
-var zoom = 12;
+    //Cycle through the data
+	for (var i = 0; i < fusionTablesData.rows.length; i++) {
 
-//google.maps.visualRefresh = true;
-function initialize() {
- map = new google.maps.Map(document.getElementById('map_canvas'), {
-    center: new google.maps.LatLng(53.7996388, -1.5491221),
-    zoom: 11,
-    streetViewControl: false,
-    panControl: false,
-    zoomControl: true
-   
+    	//Fusion tables seems to like to store lng as a string; convert it to a number.
+    	fusionTablesData.rows[i][3] = (fusionTablesData.rows[i][3] * 1);
+    	//console.log(fusionTablesData.rows[i]);
 
-});
-    
-    layer = new google.maps.FusionTablesLayer({
-        query: {
-            select: 'location',
-            from: tableid
-        },
-        map: map
-    });
-    
-     layer2 = new google.maps.FusionTablesLayer({
-        query: {
-            select: 'location',
-            from: tableid
-        },
-        map: map
-    });
-    
-     layer3 = new google.maps.FusionTablesLayer({
-        query: {
-            select: 'location',
-            from: tableid
-        },
-        map: map
-    });
-    
-    layer4 = new google.maps.FusionTablesLayer({
-        query: {
-            select: 'location',
-            from: tableid
-        },
-        map: map
-    });
-    
-     layer5 = new google.maps.FusionTablesLayer({
-        query: {
-            select: 'location',
-            from: tableid
-        },
-        map: map
-    });    
-}
+    	var latLng = new google.maps.LatLng(fusionTablesData.rows[i][2], fusionTablesData.rows[i][3]);
+	      // Creating a marker and putting it on the map
 
+        var marker = new google.maps.Marker({
+        position: latLng,
+        //animation: google.maps.Animation.DROP,
+        title: fusionTablesData.rows[i][0]
+        });
 
-//Needs updating/replacing.
-function filterData() {
-    var filter = [];
-    var stores = document.getElementsByName('store');
-    for (var i = 0, store; store = stores[i]; i++) {
-        if (store.checked) {
-            filter.push('\'' + store.value + '\'');
-        }
+        var infoWindow = new google.maps.InfoWindow({
+        content: '<ul><li>' + fusionTablesData.rows[i][0] + '</li> <li>' +fusionTablesData.rows[i][1] + '</li></ul>'
+        });
+
+        infoWindows.push(infoWindow);
+        markers.push(marker);
+        marker.setMap(map);
+        bindInfoWindow(i);
     }
 
-    if (filter.length) {
-        if (!layer.getMap()) {
-            layer.setMap(map);
-            layer2.setMap(map);
-            layer3.setMap(map);
-            layer4.setMap(map);
-            layer5.setMap(map);
-
-        }
-        
-        layer.setOptions({
-            query: {
-                select: 'location',
-                from: tableid,
-                where: '\'Genre\' IN (' + filter.join(',') + ')'
-            }
-        });
-
-
-
-layer2.setOptions({
-            query: {
-                select: 'location',
-                from: tableid,
-                where: '\'Genreb\' IN (' + filter.join(',') + ')'
-            }
-        });
-        
-layer3.setOptions({
-            query: {
-                select: 'location',
-                from: tableid,
-                where: '\'Genrec\' IN (' + filter.join(',') + ')'
-            }
-        });
-        
-layer4.setOptions({
-            query: {
-                select: 'location',
-                from: tableid,
-                where: '\'Genred\' IN (' + filter.join(',') + ')'
-            }
-        });
-        
-layer5.setOptions({
-            query: {
-                select: 'location',
-                from: tableid,
-                where: '\'Genree\' IN (' + filter.join(',') + ')'
-            }
-        });                
-        
-        
-    } else {
-        layer.setMap(null);
-        layer2.setMap(null);
-        layer3.setMap(null);
-        layer4.setMap(null);
-        layer5.setMap(null);
-    }
-}
-
-var filterButton = document.getElementsByClassName("filter-button");
-
-var myFunction = function() {
-    var attribute = this.getAttribute("value");
-    console.log(attribute);
 };
 
-for (var i = 0; i < filterButton.length; i++) {
-    filterButton[i].addEventListener('click', myFunction, false);
+
+//Bind Marker Click Events (to load infowindows)
+function bindInfoWindow(index){
+
+	markers[index].addListener('click', function() {
+
+        if(openInfoWindow !== null){
+            infoWindows[openInfoWindow].close();
+        }
+
+		infoWindows[index].open(map, markers[index]);
+        openInfoWindow = index;
+	});
+
 }
+
+
+
+function httpGetAsync(theUrl, callback){
+    var xmlHttp = new XMLHttpRequest();
+
+    xmlHttp.onreadystatechange = function() { 
+        if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+        	callback(xmlHttp.responseText);
+    }
+    xmlHttp.open("GET", theUrl, true); // true for asynchronous 
+    xmlHttp.send(null);
+
+}
+
+
+//Kick things off...
+function initialize(){
+    var baseURL = 'https://www.googleapis.com/fusiontables/v2/'
+    var tableID = '17vgwhmIf7ILHyHmsYVdzWNbxg_eeV71W0o8aFTbn';
+    var quay = 'AIzaSyAOHCSB4J7eajweITpKLTTpwfv3z_3Orl8';
+
+	httpGetAsync(baseURL + 'query?sql=SELECT * FROM ' + tableID + '&key=' + quay, createMapData);
+	
+	 map = new google.maps.Map(document.getElementById('map_canvas'), {
+    	center: new google.maps.LatLng(53.7996388, -1.5491221),
+    	zoom: 9,
+    	streetViewControl: false,
+    	panControl: false,
+    	zoomControl: true
+   	});
+}
+
+
+
+
+
+
+
+
+
 

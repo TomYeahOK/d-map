@@ -9,13 +9,19 @@
         <link rel="apple-touch-icon" href="apple-touch-icon.png">
 
         <link rel="stylesheet" href="css/normalize.min.css">
-        <link rel="stylesheet" href="css/main.css">
-
-        <script src="js/vendor/modernizr-2.8.3.min.js"></script>
-
+<!--         <link rel="stylesheet" href="css/main.css">
+ -->
         <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyDyweMwYm5nElgstXTv-MWzea9i39eJPSM"> </script>
 
-        <!-- <script type="text/javascript" src="http://maps.stamen.com/js/tile.stamen.js"></script> -->
+        <style type="text/css">
+            #map_canvas {
+                width: 100%;
+                min-height: 70vh;
+            }
+        </style>
+
+
+
     </head>
     <body>
         <!--[if lt IE 8]>
@@ -24,14 +30,14 @@
 
         <div class="header-container">
             <header class="wrapper clearfix">
-                <h1 class="title">h1.title</h1>
-                <nav>
+                <h1 class="title">Sample map</h1>
+<!--                 <nav>
                     <ul>
                         <li><a href="#">nav ul li a</a></li>
                         <li><a href="#">nav ul li a</a></li>
                         <li><a href="#">nav ul li a</a></li>
                     </ul>
-                </nav>
+                </nav> -->
             </header>
         </div>
 
@@ -50,10 +56,11 @@
 
                 <aside>
 
-                    <label>Photography <input type="checkbox" name="Photography" value="photography" class="filter-button"></label>
 
-    
-                    
+                    <p>This map takes data from Google Fusion Table, interprets it as JSON, and generates map based on that data.</p>
+
+
+                        
                 </aside>
 
             </div> <!-- #main -->
@@ -64,8 +71,15 @@
 <!--         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
         <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.11.2.min.js"><\/script>')</script> -->
 
-        <script src="js/plugins.js"></script>
-        <script src="js/main.js"></script>
+
+
+<!--         <script src="js/plugins.js"></script>
+ -->        <script src="js/main.js"></script>
+
+        <!-- <script src="https://www.googleapis.com/fusiontables/v2/tables/17vgwhmIf7ILHyHmsYVdzWNbxg_eeV71W0o8aFTbn/columns?callback=handler&key=AIzaSyAOHCSB4J7eajweITpKLTTpwfv3z_3Orl8"></script> -->
+
+        <!--  -->
+
 
         <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
 
